@@ -23,7 +23,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { games } from '@/lib/data'
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -189,17 +189,17 @@ export default function HomePage() {
       </div>
 
       <SheetContent side="left" className="p-0 w-[280px] bg-primary text-primary-foreground border-r-0 flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-black/20">
+          <SheetHeader className="flex-row items-center justify-between p-4 border-b border-black/20 text-left space-y-0">
             <div>
-              <p className="font-bold text-lg">Azatrum</p>
-              <p className="text-sm opacity-80">7111525376</p>
+              <SheetTitle className="font-bold text-lg">Azatrum</SheetTitle>
+              <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
             </div>
             <SheetClose asChild>
               <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 bg-black/20 hover:bg-black/30">
                 <XCircle className="h-5 w-5" />
               </Button>
             </SheetClose>
-          </div>
+          </SheetHeader>
           <nav className="flex-grow p-2 overflow-y-auto">
             <ul className="space-y-1">
               {sidebarNavItems.map(item => (
