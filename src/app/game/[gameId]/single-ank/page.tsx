@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
@@ -26,18 +27,32 @@ export default function SingleAnkPage() {
 
     const gameName = searchParams.get('name') || 'Game'
 
+    const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
     const [bids, setBids] = useState<{[key: string]: string}>(
         digits.reduce((acc, digit) => ({...acc, [digit]: ''}), {})
     );
 
-    const handlePointChange = (digit: string, value: string) => {
-        if (/^\d*$/.test(value)) {
-            setBids(prev => ({...prev, [digit]: value}));
+    const handleAmountClick = (amount: number) => {
+        setSelectedAmount(currentAmount => currentAmount === amount ? null : amount);
+    };
+
+    const handleDigitClick = (digit: string) => {
+        if (selectedAmount !== null) {
+            setBids(prevBids => {
+                const newBids = { ...prevBids };
+                if (newBids[digit] === selectedAmount.toString()) {
+                    newBids[digit] = '';
+                } else {
+                    newBids[digit] = selectedAmount.toString();
+                }
+                return newBids;
+            });
         }
-    }
+    };
 
     const handleReset = () => {
         setBids(digits.reduce((acc, digit) => ({...acc, [digit]: ''}), {}));
+        setSelectedAmount(null);
     }
 
     const totalPoints = useMemo(() => {
@@ -85,7 +100,12 @@ export default function SingleAnkPage() {
                                 <h3 className="text-center text-accent font-semibold mb-4">Select Amount</h3>
                                 <div className="grid grid-cols-4 gap-3">
                                     {amountShortcuts.map(amount => (
-                                        <Button key={amount} variant="outline" className="bg-white">
+                                        <Button 
+                                            key={amount} 
+                                            variant={selectedAmount === amount ? 'default' : 'outline'}
+                                            className={cn({ 'bg-white': selectedAmount !== amount })}
+                                            onClick={() => handleAmountClick(amount)}
+                                        >
                                             ₹ {amount}
                                         </Button>
                                     ))}
@@ -96,14 +116,14 @@ export default function SingleAnkPage() {
                                 <h3 className="text-center text-accent font-semibold mb-4">Select Digits</h3>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6">
                                     {digits.map(digit => (
-                                        <div key={digit} className="space-y-1">
+                                        <div key={digit} className="space-y-1" onClick={() => handleDigitClick(digit)}>
                                             <label className="text-sm font-medium text-center block text-muted-foreground">{digit}</label>
                                             <Input 
-                                                type="number" 
+                                                type="text" 
                                                 placeholder="Points"
                                                 value={bids[digit]}
-                                                onChange={(e) => handlePointChange(digit, e.target.value)}
-                                                className="text-center"
+                                                readOnly
+                                                className="text-center cursor-pointer"
                                             />
                                         </div>
                                     ))}
