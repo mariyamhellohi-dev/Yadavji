@@ -39,13 +39,13 @@ export default function SingleAnkPage() {
     const handleDigitClick = (digit: string) => {
         if (selectedAmount !== null) {
             setBids(prevBids => {
-                const newBids = { ...prevBids };
-                if (newBids[digit] === selectedAmount.toString()) {
-                    newBids[digit] = '';
-                } else {
-                    newBids[digit] = selectedAmount.toString();
-                }
-                return newBids;
+                const currentPoints = parseInt(prevBids[digit] || '0', 10);
+                const newPoints = currentPoints + selectedAmount;
+                
+                return {
+                    ...prevBids,
+                    [digit]: newPoints.toString()
+                };
             });
         }
     };
