@@ -1,14 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, Wallet, Trash2, CircleUser, Gavel, Home } from 'lucide-react'
+import { ChevronLeft, Wallet, CircleUser, Gavel, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { format } from 'date-fns'
 
 const bottomNavItems = [
@@ -17,11 +16,8 @@ const bottomNavItems = [
     { label: 'Profile', icon: CircleUser, href: '#' },
 ]
 
-type Bid = {
-    digit: string;
-    points: string;
-    id: number;
-}
+const amountShortcuts = [5, 10, 50, 100, 200, 500, 1000, 5000];
+const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 export default function SingleAnkPage() {
     const router = useRouter()
@@ -30,24 +26,24 @@ export default function SingleAnkPage() {
 
     const gameName = searchParams.get('name') || 'Game'
 
-    const [digit, setDigit] = useState('')
-    const [points, setPoints] = useState('')
-    const [bids, setBids] = useState<Bid[]>([])
+    const [bids, setBids] = useState<{[key: string]: string}>(
+        digits.reduce((acc, digit) => ({...acc, [digit]: ''}), {})
+    );
 
-    const handleAddBid = () => {
-        if (digit.length === 1 && parseInt(digit) >= 0 && parseInt(digit) <= 9 && points && parseInt(points) > 0) {
-            setBids([...bids, { digit, points, id: Date.now() }])
-            setDigit('')
-            setPoints('')
+    const handlePointChange = (digit: string, value: string) => {
+        if (/^\d*$/.test(value)) {
+            setBids(prev => ({...prev, [digit]: value}));
         }
     }
 
-    const handleDeleteBid = (id: number) => {
-        setBids(bids.filter(bid => bid.id !== id))
+    const handleReset = () => {
+        setBids(digits.reduce((acc, digit) => ({...acc, [digit]: ''}), {}));
     }
 
-    const totalPoints = bids.reduce((sum, bid) => sum + parseInt(bid.points), 0)
-
+    const totalPoints = useMemo(() => {
+        return Object.values(bids).reduce((sum, point) => sum + (parseInt(point) || 0), 0)
+    }, [bids]);
+    
     const today = format(new Date(), 'dd/MM/yyyy')
 
     return (
@@ -71,12 +67,9 @@ export default function SingleAnkPage() {
             <main className="py-4 pb-24">
                 <div className="max-w-4xl mx-auto px-4">
                     <Card className="bg-card border-border shadow-md">
-                        <CardHeader>
-                            <CardTitle className="text-xl text-center text-accent uppercase">{gameName} - Single Ank</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-6 space-y-4">
-                            <div className="grid grid-cols-2 gap-4 items-center">
-                                <Input value={today} readOnly className="text-center font-semibold text-purple-800" />
+                        <CardContent className="p-6 space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                <Input value={today} readOnly className="text-center font-semibold text-purple-800 bg-white" />
                                 <Select defaultValue="open">
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select Session" />
@@ -88,58 +81,43 @@ export default function SingleAnkPage() {
                                 </Select>
                             </div>
                             
-                            <div className="text-center text-muted-foreground text-sm">Enter Ank and Points</div>
-
-                            <div className="flex items-center gap-4">
-                                <Input 
-                                    type="number" 
-                                    placeholder="Digit (0-9)"
-                                    value={digit}
-                                    onChange={(e) => {
-                                        if (e.target.value.length <= 1 && /^[0-9]*$/.test(e.target.value)) {
-                                            setDigit(e.target.value)
-                                        }
-                                    }}
-                                />
-                                <Input 
-                                    type="number" 
-                                    placeholder="Points"
-                                    value={points}
-                                    onChange={(e) => setPoints(e.target.value)}
-                                />
-                                <Button onClick={handleAddBid}>Add</Button>
+                            <div className="border-t border-border pt-6">
+                                <h3 className="text-center text-accent font-semibold mb-4">Select Amount</h3>
+                                <div className="grid grid-cols-4 gap-3">
+                                    {amountShortcuts.map(amount => (
+                                        <Button key={amount} variant="outline" className="bg-white">
+                                            ₹ {amount}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="border-t border-border pt-6">
+                                <h3 className="text-center text-accent font-semibold mb-4">Select Digits</h3>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6">
+                                    {digits.map(digit => (
+                                        <div key={digit} className="space-y-1">
+                                            <label className="text-sm font-medium text-center block text-muted-foreground">{digit}</label>
+                                            <Input 
+                                                type="number" 
+                                                placeholder="Points"
+                                                value={bids[digit]}
+                                                onChange={(e) => handlePointChange(digit, e.target.value)}
+                                                className="text-center"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
-                            {bids.length > 0 && (
-                                <div className="space-y-4">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Ank</TableHead>
-                                                <TableHead>Points</TableHead>
-                                                <TableHead className="text-right">Action</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {bids.map(bid => (
-                                                <TableRow key={bid.id}>
-                                                    <TableCell>{bid.digit}</TableCell>
-                                                    <TableCell>{bid.points}</TableCell>
-                                                    <TableCell className="text-right">
-                                                        <Button variant="ghost" size="icon" onClick={() => handleDeleteBid(bid.id)}>
-                                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                    <div className="text-right font-bold">
-                                        Total Points: {totalPoints}
-                                    </div>
-                                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Submit Bids</Button>
-                                </div>
-                            )}
+                            <div className="text-center font-bold pt-4">
+                                Total Points : {totalPoints}
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 pt-4">
+                                <Button variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={handleReset}>Reset</Button>
+                                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">Submit</Button>
+                            </div>
 
                         </CardContent>
                     </Card>
