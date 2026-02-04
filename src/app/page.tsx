@@ -92,24 +92,6 @@ export default function HomePage() {
                   ))}
               </div>
 
-              <Card className="bg-primary/80 border-primary shadow-sm overflow-hidden">
-                  <CardContent className="p-0 flex items-stretch">
-                      <div className="flex items-center justify-center p-4">
-                          <Star className="h-6 w-6 text-black"/>
-                      </div>
-                      <div className="flex-grow text-left py-2 px-4 flex flex-col justify-center">
-                          <p className="font-bold text-base uppercase text-black">MUMBAI STARLINE</p>
-                          <p className="text-sm text-black/80">Har ghante jito</p>
-                      </div>
-                      <div className="flex items-center justify-center p-4">
-                          <Button className="bg-white text-primary hover:bg-white/90 rounded-md">
-                              <PlayCircle className="h-5 w-5 mr-1" />
-                              Play Starline
-                          </Button>
-                      </div>
-                  </CardContent>
-              </Card>
-
               <div className="flex items-center gap-4 text-primary">
                   <div className="flex-grow h-px bg-primary/30"></div>
                   <h2 className="text-sm font-semibold tracking-wider text-accent">#1 YADAVJI KHEL APPLICATION</h2>
