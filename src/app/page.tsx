@@ -12,17 +12,19 @@ import {
   Wallet,
   X,
 } from 'lucide-react'
+import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { games } from '@/lib/data'
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet"
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
   DialogClose,
   DialogTitle,
+  DialogHeader,
 } from "@/components/ui/dialog"
 
 
@@ -89,7 +91,7 @@ export default function HomePage() {
         </header>
 
         <main className="py-4 pb-24">
-            <div className="max-w-7xl mx-auto px-4 space-y-4">
+            <div className="max-w-4xl mx-auto px-4 space-y-4">
               
               <div className="grid grid-cols-3 gap-3">
                   {quickActions.map((action) => (
@@ -138,23 +140,25 @@ export default function HomePage() {
                                   <span className="text-xs font-bold">Closed</span>
                               </Button>
                             ) : (
-                              <Button className="w-24 h-10 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 rounded-full">
-                                <PlayCircle className="h-5 w-5" />
-                                <span className="text-xs font-bold">Play Now</span>
-                              </Button>
+                              <Link href={`/game/${game.id}?name=${encodeURIComponent(game.name)}`} passHref>
+                                <Button className="w-24 h-10 bg-primary text-primary-foreground hover:bg-primary/90 gap-1.5 rounded-full">
+                                  <PlayCircle className="h-5 w-5" />
+                                  <span className="text-xs font-bold">Play Now</span>
+                                </Button>
+                              </Link>
                             )}
                           </div>
                         </CardContent>
                       </Card>
                       <DialogContent className="max-w-md p-0">
-                        <div className="bg-primary p-4 flex justify-between items-center rounded-t-lg">
+                        <DialogHeader className="bg-primary p-4 flex flex-row justify-between items-center rounded-t-lg">
                           <DialogTitle className="text-lg font-bold text-black uppercase">{game.name}</DialogTitle>
                           <DialogClose asChild>
                             <button className="text-black opacity-70 hover:opacity-100">
                               <X className="h-5 w-5" />
                             </button>
                           </DialogClose>
-                        </div>
+                        </DialogHeader>
                         <div className="p-6 space-y-4 text-sm">
                           <div className="flex justify-between items-center border-b pb-3">
                             <div className="flex items-center gap-3">
@@ -214,33 +218,33 @@ export default function HomePage() {
       </div>
 
       <SheetContent side="left" className="p-0 w-[280px] bg-primary text-primary-foreground border-r-0 flex flex-col">
-          <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0.5 relative">
-            <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
-            <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
-             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="absolute top-3 right-2 text-black hover:bg-black/10">
-                    <X className="h-5 w-5" />
-                </Button>
-            </SheetTrigger>
-          </SheetHeader>
-          <nav className="flex-grow p-2 overflow-y-auto">
-            <ul className="space-y-1">
-              {sidebarNavItems.map(item => (
-                <li key={item.label}>
-                  <a href={item.href} className={`flex items-center gap-3 p-3 rounded-md transition-colors ${item.active ? 'bg-black/20' : 'hover:bg-black/10'}`}>
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-medium text-sm">{item.label}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="p-4 mt-auto border-t border-black/10">
-            <Button className="w-full bg-black text-white font-bold hover:bg-gray-800">
-              <LogOut className="mr-2 h-5 w-5" />
-              Logout
+        <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0.5 relative">
+          <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
+          <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
+          <SheetClose asChild>
+            <Button variant="ghost" size="icon" className="absolute top-3 right-2 text-primary-foreground hover:bg-black/10">
+              <X className="h-5 w-5" />
             </Button>
-          </div>
+          </SheetClose>
+        </SheetHeader>
+        <nav className="flex-grow p-2 overflow-y-auto">
+          <ul className="space-y-1">
+            {sidebarNavItems.map(item => (
+              <li key={item.label}>
+                <a href={item.href} className={`flex items-center gap-3 p-3 rounded-md transition-colors ${item.active ? 'bg-black/20' : 'hover:bg-black/10'}`}>
+                  <item.icon className="h-5 w-5" />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="p-4 mt-auto border-t border-black/10">
+          <Button className="w-full bg-black/80 text-white font-bold hover:bg-black">
+            <LogOut className="mr-2 h-5 w-5" />
+            Logout
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   )
