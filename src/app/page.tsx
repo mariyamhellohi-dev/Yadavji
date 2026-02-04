@@ -15,13 +15,12 @@ import {
   PlayCircle,
   Star,
   Trophy,
-  XCircle,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { games } from '@/lib/data'
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -52,18 +51,14 @@ const quickActions = [
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '#', active: true },
     { label: 'Profile', icon: CircleUser, href: '#' },
-    { label: 'My Bids', icon: IndianRupee, href: '#' },
+    { label: 'My Bids', icon: Gavel, href: '#' },
 ]
 
 const sidebarNavItems = [
   { label: 'Home', icon: Home, href: '#', active: true },
   { label: 'Bidding History', icon: ListOrdered, href: '#' },
-  { label: 'Starline Bid History', icon: ListOrdered, href: '#' },
-  { label: 'Transaction History', icon: ArrowRightLeft, href: '#' },
   { label: 'Fund History', icon: CircleDollarSign, href: '#' },
   { label: 'Top Winners', icon: Trophy, href: '#' },
-  { label: 'Starline Winners', icon: Trophy, href: '#' },
-  { label: 'Notifications', icon: Bell, href: '#' },
   { label: 'Game Rates', icon: Gavel, href: '#' },
 ]
 
@@ -183,16 +178,9 @@ export default function HomePage() {
       </div>
 
       <SheetContent side="left" className="p-0 w-[280px] bg-primary text-primary-foreground border-r-0 flex flex-col">
-          <SheetHeader className="flex-row items-center justify-between p-4 border-b border-black/20 text-left space-y-0">
-            <div>
-              <SheetTitle className="font-bold text-lg">Azatrum</SheetTitle>
-              <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
-            </div>
-            <SheetClose asChild>
-              <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 bg-black/20 hover:bg-black/30">
-                <XCircle className="h-5 w-5" />
-              </Button>
-            </SheetClose>
+          <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0">
+            <SheetTitle className="font-bold text-lg">Azatrum</SheetTitle>
+            <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
           </SheetHeader>
           <nav className="flex-grow p-2 overflow-y-auto">
             <ul className="space-y-1">
@@ -207,7 +195,7 @@ export default function HomePage() {
             </ul>
           </nav>
           <div className="p-4 mt-auto border-t border-black/10">
-            <Button className="w-full bg-black text-primary-foreground font-bold hover:bg-gray-800">
+            <Button className="w-full bg-black text-white font-bold hover:bg-gray-800">
               <LogOut className="mr-2 h-5 w-5" />
               Logout
             </Button>
