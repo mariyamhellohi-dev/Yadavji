@@ -1,28 +1,23 @@
 import {
-  ArrowDownCircle,
+  ArrowRightLeft,
+  Bell,
   BookOpen,
+  CircleDollarSign,
   CircleUser,
   Clock,
   CreditCard,
-  History,
+  Download,
+  Gavel,
   Home,
+  IndianRupee,
+  ListOrdered,
+  LogOut,
   Menu,
   MessageCircleQuestion,
-  Megaphone,
   PlayCircle,
-  Smartphone,
   Star,
-  Wallet,
-  XCircle,
-  ListOrdered,
-  ArrowRightLeft,
-  CircleDollarSign,
   Trophy,
-  Bell,
-  Gavel,
-  Download,
-  LogOut,
-  IndianRupee,
+  XCircle,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -52,14 +47,14 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const quickActions = [
   { label: 'Add Fund', icon: CreditCard, href: '#' },
-  { label: 'Withdraw', icon: ArrowDownCircle, href: '#' },
+  { label: 'Withdraw', icon: IndianRupee, href: '#' },
   { label: 'Support', icon: MessageCircleQuestion, href: '#' },
-  { label: 'Download App', icon: Smartphone, href: '#' },
+  { label: 'Download App', icon: Download, href: '#' },
 ]
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '#', active: true },
-    { label: 'History', icon: History, href: '#' },
+    { label: 'History', icon: ListOrdered, href: '#' },
     { label: 'Profile', icon: CircleUser, href: '#' },
     { label: 'Passbook', icon: BookOpen, href: '#' },
     { label: 'My Bids', icon: IndianRupee, href: '#' },
@@ -81,113 +76,110 @@ const sidebarNavItems = [
 export default function HomePage() {
   return (
     <Sheet>
-      <div className="max-w-md mx-auto bg-background min-h-screen font-sans">
-        <header className="sticky top-0 z-20 flex items-center justify-between p-3 bg-primary text-primary-foreground shadow-md">
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
+      <div className="bg-background min-h-screen font-sans">
+        <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-3 bg-primary text-black shadow-lg">
+            <div className="flex items-center gap-4">
+                <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-black hover:bg-black/10">
+                        <Menu className="h-6 w-6" />
+                    </Button>
+                </SheetTrigger>
+                <h1 className="text-2xl font-bold">Play Matka Online</h1>
+            </div>
+            <Button
+                variant="outline"
+                className="rounded-md bg-white border-yellow-300 text-black h-9 px-4 font-bold"
+            >
+                ₹ 0
             </Button>
-          </SheetTrigger>
-          <h1 className="text-xl font-bold">Matka Master</h1>
-          <Button
-            variant="secondary"
-            className="rounded-full bg-black/10 border border-white/50 h-9 px-4"
-          >
-            <Wallet className="h-4 w-4 mr-2" />₹ 5,240.00
-          </Button>
         </header>
 
-        <main className="p-3 pb-24 space-y-4">
-          <div className="grid grid-cols-4 gap-3">
-            {quickActions.map((action) => (
-              <Button
-                key={action.label}
-                variant="outline"
-                className="h-20 flex-col gap-1 border-primary bg-secondary text-foreground hover:bg-secondary/80"
-              >
-                <action.icon className="h-6 w-6" />
-                <span className="text-xs">{action.label}</span>
-              </Button>
-            ))}
-          </div>
-
-          <div className="bg-pink-100 text-red-600 p-2 rounded-lg text-sm flex items-center">
-            <Megaphone className="h-5 w-5 mr-2 shrink-0" />
-            <p className="truncate">
-              !!! URGENT! URGENT! URGENT! Welcome to Matka Master...
-            </p>
-          </div>
-          
-          <Card className="bg-primary/80 border-primary shadow-sm">
-            <CardContent className="p-2 flex justify-between items-center">
-               <div className="flex items-center gap-2 text-primary-foreground">
-                  <Star className="h-6 w-6"/>
-                  <div>
-                      <p className="font-bold">MUMBAI STARLINE</p>
-                      <p className="text-xs">Har ghante jito</p>
-                  </div>
-               </div>
-               <Button className="bg-white text-primary hover:bg-white/90 rounded-full">
-                  <PlayCircle className="h-5 w-5 mr-1" />
-                  Play Starline
-               </Button>
-            </CardContent>
-          </Card>
-
-
-          <div className="flex items-center gap-4 text-primary">
-            <div className="flex-grow h-px bg-primary/30"></div>
-            <h2 className="text-sm font-semibold tracking-wider">#1 MATKA PLAY APPLICATION</h2>
-            <div className="flex-grow h-px bg-primary/30"></div>
-          </div>
-
-          <div className="space-y-2">
-            {games.map((game) => {
-              const isClosed = game.status === 'Betting is Closed'
+        <main className="py-4 pb-24">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
               
-              return (
-              <Card key={game.id} className="bg-card border-border shadow-md overflow-hidden">
-                <CardContent className="p-0 flex items-stretch">
-                  <div className="flex flex-col items-center justify-center p-2 border-r border-border">
-                    <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full border border-border">
-                      <Clock className="h-6 w-6 text-primary" />
-                    </Button>
-                    <span className="text-xs mt-1">Timing</span>
-                  </div>
-                  
-                  <div className="flex-grow text-center py-2 px-4">
-                    <p className="font-bold text-base uppercase">{game.name}</p>
-                    <p className={`text-xs ${isClosed ? 'text-red-500' : 'text-green-600'}`}>{game.status}</p>
-                    <p className="font-bold text-2xl text-accent tracking-widest">{game.result}</p>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  {quickActions.map((action) => (
+                      <Button
+                          key={action.label}
+                          variant="default"
+                          className="h-12 justify-center bg-primary text-black hover:bg-primary/90 border border-yellow-500 shadow-sm gap-2"
+                      >
+                          <action.icon className="h-5 w-5" />
+                          <span className="text-base font-semibold">{action.label}</span>
+                      </Button>
+                  ))}
+              </div>
 
-                  <div className="flex items-center justify-center p-2 border-l border-border">
-                    {isClosed ? (
-                       <Button disabled className="h-14 w-14 rounded-full flex-col p-1 bg-gray-200 text-gray-500">
-                          <XCircle className="h-6 w-6" />
-                          <span className="text-[10px] leading-tight">Closed</span>
-                      </Button>
-                    ) : (
-                      <Button className="h-14 w-14 rounded-full flex-col p-1 bg-primary text-primary-foreground hover:bg-primary/90">
-                        <PlayCircle className="h-6 w-6" />
-                        <span className="text-[10px] leading-tight">Play Now</span>
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
+              <Card className="bg-primary/80 border-primary shadow-sm overflow-hidden">
+                  <CardContent className="p-0 flex items-stretch">
+                      <div className="flex items-center justify-center p-4">
+                          <Star className="h-6 w-6 text-black"/>
+                      </div>
+                      <div className="flex-grow text-left py-2 px-4 flex flex-col justify-center">
+                          <p className="font-bold text-base uppercase text-black">MUMBAI STARLINE</p>
+                          <p className="text-sm text-black/80">Har ghante jito</p>
+                      </div>
+                      <div className="flex items-center justify-center p-4">
+                          <Button className="bg-white text-primary hover:bg-white/90 rounded-md">
+                              <PlayCircle className="h-5 w-5 mr-1" />
+                              Play Starline
+                          </Button>
+                      </div>
+                  </CardContent>
               </Card>
-            )})}
-          </div>
+
+              <div className="flex items-center gap-4 text-primary">
+                  <div className="flex-grow h-px bg-primary/30"></div>
+                  <h2 className="text-sm font-semibold tracking-wider text-accent">#1 MATKA PLAY APPLICATION</h2>
+                  <div className="flex-grow h-px bg-primary/30"></div>
+              </div>
+
+              <div className="space-y-3">
+                  {games.map((game) => {
+                    const isClosed = game.status === 'Betting is Closed'
+                    
+                    return (
+                    <Card key={game.id} className="bg-card border-border shadow-md overflow-hidden">
+                      <CardContent className="p-0 grid grid-cols-[150px_1fr_150px] items-center">
+                        <div className="flex items-center justify-center gap-2 p-4 border-r border-border h-full">
+                          <Clock className="h-5 w-5 text-primary" />
+                          <span className="text-sm font-medium">Timing</span>
+                        </div>
+                        
+                        <div className="flex-grow text-center py-2 px-4">
+                          <p className="font-bold text-base uppercase">{game.name}</p>
+                          <p className={`text-xs font-semibold ${isClosed ? 'text-red-500' : 'text-green-600'}`}>{game.status}</p>
+                          <p className="font-bold text-2xl text-accent tracking-widest">{game.result}</p>
+                        </div>
+
+                        <div className="flex items-center justify-center p-4 border-l border-border h-full">
+                          {isClosed ? (
+                            <Button disabled variant="outline" className="w-28 bg-gray-200 text-gray-500 border-gray-300 gap-2">
+                                <PlayCircle className="h-5 w-5" />
+                                <span>Closed</span>
+                            </Button>
+                          ) : (
+                            <Button className="w-28 bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
+                              <PlayCircle className="h-5 w-5" />
+                              <span>Play Now</span>
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )})}
+              </div>
+            </div>
         </main>
         
-        <Button className="fixed bottom-20 right-4 h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg z-20">
-          <WhatsAppIcon className="h-7 w-7 text-white" />
+        <Button className="fixed bottom-24 right-4 h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg z-20">
+            <WhatsAppIcon className="h-7 w-7 text-white" />
         </Button>
         
-        <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-primary text-primary-foreground shadow-[0_-2px_5px_rgba(0,0,0,0.1)]">
+        <footer className="fixed bottom-0 left-0 right-0 z-30 bg-primary text-primary-foreground shadow-[0_-2px_5px_rgba(0,0,0,0.1)]">
            <div className="flex justify-around">
               {bottomNavItems.map(item => (
-                  <Button key={item.label} variant="ghost" className={`flex-1 flex-col h-16 rounded-none ${item.active ? 'bg-black/20' : ''} hover:bg-black/10 text-primary-foreground`}>
+                  <Button key={item.label} variant="ghost" className={`flex-1 flex-col h-16 rounded-none ${item.active ? 'bg-black/20' : ''} hover:bg-black/10 text-primary-foreground border-r border-yellow-500/50 last:border-r-0`}>
                       <item.icon className="h-6 w-6" />
                       <span className="text-xs mt-1">{item.label}</span>
                   </Button>
