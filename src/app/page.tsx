@@ -1,14 +1,10 @@
 import {
-  ArrowRightLeft,
-  Bell,
-  CircleDollarSign,
   CircleUser,
   Clock,
   CreditCard,
   Gavel,
   Home,
   IndianRupee,
-  ListOrdered,
   LogOut,
   Menu,
   MessageCircleQuestion,
@@ -56,9 +52,6 @@ const bottomNavItems = [
 
 const sidebarNavItems = [
   { label: 'Home', icon: Home, href: '#', active: true },
-  { label: 'Bidding History', icon: ListOrdered, href: '#' },
-  { label: 'Fund History', icon: CircleDollarSign, href: '#' },
-  { label: 'Top Winners', icon: Trophy, href: '#' },
   { label: 'Game Rates', icon: Gavel, href: '#' },
 ]
 
@@ -73,7 +66,7 @@ export default function HomePage() {
                         <Menu className="h-6 w-6" />
                     </Button>
                 </SheetTrigger>
-                <h1 className="text-2xl font-bold">Play Matka Online</h1>
+                <h1 className="text-2xl font-bold">YadavJi Khel</h1>
             </div>
             <Button
                 variant="outline"
@@ -119,7 +112,7 @@ export default function HomePage() {
 
               <div className="flex items-center gap-4 text-primary">
                   <div className="flex-grow h-px bg-primary/30"></div>
-                  <h2 className="text-sm font-semibold tracking-wider text-accent">#1 MATKA PLAY APPLICATION</h2>
+                  <h2 className="text-sm font-semibold tracking-wider text-accent">#1 YADAVJI KHEL APPLICATION</h2>
                   <div className="flex-grow h-px bg-primary/30"></div>
               </div>
 
@@ -179,7 +172,7 @@ export default function HomePage() {
 
       <SheetContent side="left" className="p-0 w-[280px] bg-primary text-primary-foreground border-r-0 flex flex-col">
           <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0">
-            <SheetTitle className="font-bold text-lg">Azatrum</SheetTitle>
+            <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
             <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
           </SheetHeader>
           <nav className="flex-grow p-2 overflow-y-auto">
