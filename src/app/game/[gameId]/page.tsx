@@ -62,16 +62,6 @@ const SangamIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const bidOptions = [
-  { label: 'Single Ank', icon: SingleAnkIcon, href: '#' },
-  { label: 'Jodi', icon: JodiIcon, href: '#' },
-  { label: 'Single Patti', icon: SinglePattiIcon, href: '#' },
-  { label: 'Double Patti', icon: DoublePattiIcon, href: '#' },
-  { label: 'Triple Patti', icon: TriplePattiIcon, href: '#' },
-  { label: 'Half Sangam', icon: SangamIcon, href: '#' },
-  { label: 'Full Sangam', icon: SangamIcon, href: '#' },
-]
-
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#'},
@@ -82,8 +72,18 @@ export default function GameDashboardPage() {
   const params = useParams()
   const searchParams = useSearchParams()
 
-  const gameId = params.gameId
+  const gameId = params.gameId as string
   const gameName = searchParams.get('name') || 'Game'
+
+  const bidOptions = [
+    { label: 'Single Ank', icon: SingleAnkIcon, href: `/game/${gameId}/single-ank?name=${encodeURIComponent(gameName)}` },
+    { label: 'Jodi', icon: JodiIcon, href: '#' },
+    { label: 'Single Patti', icon: SinglePattiIcon, href: '#' },
+    { label: 'Double Patti', icon: DoublePattiIcon, href: '#' },
+    { label: 'Triple Patti', icon: TriplePattiIcon, href: '#' },
+    { label: 'Half Sangam', icon: SangamIcon, href: '#' },
+    { label: 'Full Sangam', icon: SangamIcon, href: '#' },
+  ]
 
   return (
     <div className="bg-background min-h-screen font-sans">
