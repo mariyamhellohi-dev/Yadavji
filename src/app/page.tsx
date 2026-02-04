@@ -2,7 +2,6 @@ import {
   CircleUser,
   Clock,
   CreditCard,
-  Download,
   Gavel,
   HelpCircle,
   Home,
@@ -23,6 +22,7 @@ import {
   DialogContent,
   DialogTrigger,
   DialogClose,
+  DialogTitle,
 } from "@/components/ui/dialog"
 
 
@@ -148,7 +148,7 @@ export default function HomePage() {
                       </Card>
                       <DialogContent className="max-w-md p-0">
                         <div className="bg-primary p-4 flex justify-between items-center rounded-t-lg">
-                          <h3 className="text-lg font-bold text-black uppercase">{game.name}</h3>
+                          <DialogTitle className="text-lg font-bold text-black uppercase">{game.name}</DialogTitle>
                           <DialogClose asChild>
                             <button className="text-black opacity-70 hover:opacity-100">
                               <X className="h-5 w-5" />
