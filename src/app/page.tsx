@@ -1,12 +1,10 @@
 import {
   ArrowRightLeft,
   Bell,
-  BookOpen,
   CircleDollarSign,
   CircleUser,
   Clock,
   CreditCard,
-  Download,
   Gavel,
   Home,
   IndianRupee,
@@ -49,14 +47,11 @@ const quickActions = [
   { label: 'Add Fund', icon: CreditCard, href: '#' },
   { label: 'Withdraw', icon: IndianRupee, href: '#' },
   { label: 'Support', icon: MessageCircleQuestion, href: '#' },
-  { label: 'Download App', icon: Download, href: '#' },
 ]
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '#', active: true },
-    { label: 'History', icon: ListOrdered, href: '#' },
     { label: 'Profile', icon: CircleUser, href: '#' },
-    { label: 'Passbook', icon: BookOpen, href: '#' },
     { label: 'My Bids', icon: IndianRupee, href: '#' },
 ]
 
@@ -70,7 +65,6 @@ const sidebarNavItems = [
   { label: 'Starline Winners', icon: Trophy, href: '#' },
   { label: 'Notifications', icon: Bell, href: '#' },
   { label: 'Game Rates', icon: Gavel, href: '#' },
-  { label: 'Download App', icon: Download, href: '#' },
 ]
 
 export default function HomePage() {
@@ -97,7 +91,7 @@ export default function HomePage() {
         <main className="py-4 pb-24">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {quickActions.map((action) => (
                       <Button
                           key={action.label}
