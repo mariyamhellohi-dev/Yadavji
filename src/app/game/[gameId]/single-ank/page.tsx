@@ -124,9 +124,9 @@ export default function SingleAnkPage() {
                         <Card className="bg-card border-border shadow-md">
                             <CardContent className="p-6 space-y-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
-                                    <Input value={today} readOnly className="text-center font-semibold text-purple-800 bg-white" />
+                                    <Input value={today} readOnly className="text-center font-semibold bg-white" />
                                     <Select defaultValue="open">
-                                        <SelectTrigger>
+                                        <SelectTrigger className="bg-white">
                                             <SelectValue placeholder="Select Session" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -163,7 +163,7 @@ export default function SingleAnkPage() {
                                                     placeholder="Points"
                                                     value={bids[digit]}
                                                     readOnly
-                                                    className="text-center cursor-pointer"
+                                                    className="text-center cursor-pointer bg-white"
                                                 />
                                             </div>
                                         ))}
