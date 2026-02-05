@@ -10,6 +10,7 @@ import { useWallet } from '@/hooks/use-wallet'
 import { createClient } from '@/lib/supabase/client'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/hooks/use-toast'
 
 // Define types
 type UserSession = {
@@ -112,6 +113,7 @@ export default function MyBidsPage() {
     const [walletBalance] = useWallet()
     const [bids, setBids] = useState<Bid[]>([])
     const [loading, setLoading] = useState(true)
+    const { toast } = useToast();
 
     useEffect(() => {
         const sessionRaw = localStorage.getItem('yadavji-user')
@@ -143,9 +145,7 @@ export default function MyBidsPage() {
         } else {
             router.replace('/login')
         }
-    }, [router, supabase])
-
-    const { toast } = useToast();
+    }, [router, supabase, toast])
 
     return (
         <div className="bg-background min-h-screen font-sans">
