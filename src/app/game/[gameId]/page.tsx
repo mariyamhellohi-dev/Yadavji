@@ -66,7 +66,7 @@ const SangamIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#'},
-    { label: 'Profile', icon: CircleUser, href: '#' },
+    { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 export default function GameDashboardPage() {

@@ -26,7 +26,7 @@ import { useWallet } from '@/hooks/use-wallet'
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#'},
-    { label: 'Profile', icon: CircleUser, href: '#' },
+    { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 const amountShortcuts = [5, 10, 50, 100, 200, 500, 1000, 5000];

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft, Wallet, CircleUser, Gavel, Home, Banknote } from 'lucide-react'
@@ -10,26 +10,69 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
 import { useWallet } from '@/hooks/use-wallet'
+import { createClient } from '@/lib/supabase/client'
 
-// Dummy data for bank accounts
-const bankAccounts = [
-    { id: '1', name: 'HDFC Bank - XXXX 1234', value: 'hdfc-1234' },
-    { id: '2', name: 'ICICI Bank - XXXX 5678', value: 'icici-5678' },
-];
+type BankAccount = {
+  id: string
+  user_id: string
+  account_holder_name: string
+  bank_name: string
+  account_number: string
+  ifsc_code: string
+  created_at: string
+}
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#' },
-    { label: 'Profile', icon: CircleUser, href: '#' },
+    { label: 'Profile', icon: CircleUser, href: '/profile' },
 ];
 
 export default function WithdrawPage() {
     const router = useRouter()
     const { toast } = useToast()
+    const supabase = createClient()
     
     const [walletBalance, setWalletBalance] = useWallet()
     const [amount, setAmount] = useState('')
-    const [selectedAccount, setSelectedAccount] = useState(bankAccounts[0].value)
+    const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([])
+    const [selectedAccount, setSelectedAccount] = useState('')
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchBankAccounts = async () => {
+            const sessionRaw = localStorage.getItem('yadavji-user');
+            if (!sessionRaw) {
+                router.replace('/login');
+                return;
+            }
+            const session = JSON.parse(sessionRaw);
+            const userId = session?.user?.id;
+
+            if (!userId) {
+                toast({ variant: 'destructive', title: 'Error', description: 'Could not identify user.' })
+                setLoading(false)
+                return
+            }
+
+            const { data, error } = await supabase
+                .from('bank_accounts')
+                .select('*')
+                .eq('user_id', userId)
+
+            if (error) {
+                toast({ variant: 'destructive', title: 'Error fetching accounts', description: error.message })
+            } else {
+                setBankAccounts(data)
+                if (data.length > 0) {
+                    setSelectedAccount(data[0].id)
+                }
+            }
+            setLoading(false)
+        }
+
+        fetchBankAccounts()
+    }, [router, supabase, toast])
 
     const handleWithdraw = () => {
         const numericAmount = parseFloat(amount)
@@ -52,7 +95,15 @@ export default function WithdrawPage() {
             return
         }
 
-        // Process withdrawal
+        if (!selectedAccount) {
+            toast({
+                variant: 'destructive',
+                title: 'No Bank Account Selected',
+                description: 'Please select a bank account to withdraw to.',
+            })
+            return
+        }
+
         toast({
             title: 'Withdrawal Request Submitted',
             description: `Your request to withdraw ₹${numericAmount.toFixed(2)} is being processed.`,
@@ -87,42 +138,53 @@ export default function WithdrawPage() {
                             <CardDescription className="text-center">Send money to your bank account.</CardDescription>
                         </CardHeader>
                         <CardContent className="p-6 space-y-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-sm font-medium">Select Bank Account</label>
-                                    <Select value={selectedAccount} onValueChange={setSelectedAccount}>
-                                        <SelectTrigger className="bg-white mt-1">
-                                            <SelectValue placeholder="Select a bank account" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {bankAccounts.map(account => (
-                                                <SelectItem key={account.id} value={account.value}>{account.name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                
-                                <div className="p-4 rounded-lg bg-muted text-center">
-                                    <p className="text-sm text-muted-foreground">Available Balance</p>
-                                    <p className="text-3xl font-bold">₹ {walletBalance.toFixed(2)}</p>
-                                </div>
+                            {loading ? (
+                                <p className="text-center">Loading bank accounts...</p>
+                            ) : bankAccounts.length > 0 ? (
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium">Select Bank Account</label>
+                                        <Select value={selectedAccount} onValueChange={setSelectedAccount}>
+                                            <SelectTrigger className="bg-white mt-1">
+                                                <SelectValue placeholder="Select a bank account" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {bankAccounts.map(account => (
+                                                    <SelectItem key={account.id} value={account.id}>
+                                                        {`${account.bank_name} - ****${account.account_number.slice(-4)}`}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    
+                                    <div className="p-4 rounded-lg bg-muted text-center">
+                                        <p className="text-sm text-muted-foreground">Available Balance</p>
+                                        <p className="text-3xl font-bold">₹ {walletBalance.toFixed(2)}</p>
+                                    </div>
 
-                                <div>
-                                    <label className="text-sm font-medium">Amount to Withdraw</label>
-                                    <Input 
-                                        type="number" 
-                                        placeholder="Enter amount"
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        className="mt-1 h-12 text-lg text-center bg-white"
-                                    />
+                                    <div>
+                                        <label className="text-sm font-medium">Amount to Withdraw</label>
+                                        <Input 
+                                            type="number" 
+                                            placeholder="Enter amount"
+                                            value={amount}
+                                            onChange={(e) => setAmount(e.target.value)}
+                                            className="mt-1 h-12 text-lg text-center bg-white"
+                                        />
+                                    </div>
+                                    
+                                    <Button className="w-full h-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90" onClick={handleWithdraw}>
+                                        <Banknote className="mr-2 h-5 w-5" />
+                                        Withdraw Money
+                                    </Button>
                                 </div>
-                                
-                                <Button className="w-full h-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90" onClick={handleWithdraw}>
-                                    <Banknote className="mr-2 h-5 w-5" />
-                                    Withdraw Money
-                                </Button>
-                            </div>
+                             ) : (
+                                <div className="text-center space-y-4">
+                                    <p className="text-muted-foreground">You have not added any bank accounts yet.</p>
+                                    <Button onClick={() => router.push('/profile')}>Add Bank Account</Button>
+                                </div>
+                             )}
 
                             <div className="text-center text-xs text-muted-foreground space-y-2 pt-4 border-t">
                                 <p>Withdrawal requests may take up to 24 hours.</p>

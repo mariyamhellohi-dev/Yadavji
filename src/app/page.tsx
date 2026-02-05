@@ -13,14 +13,13 @@ import {
   Menu,
   PlayCircle,
   Wallet,
-  X,
 } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { games } from '@/lib/data'
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetClose } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import {
   Dialog,
   DialogContent,
@@ -58,14 +57,14 @@ const quickActions = [
 ]
 
 const bottomNavItems = [
-    { label: 'Home', icon: Home, href: '#', active: true },
+    { label: 'Home', icon: Home, href: '/', active: true },
     { label: 'Bids', icon: Gavel, href: '#'},
-    { label: 'Profile', icon: CircleUser, href: '#' },
+    { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 const sidebarNavItems = [
-  { label: 'Home', icon: Home, href: '#', active: true },
-  { label: 'My Profile', icon: CircleUser, href: '#' },
+  { label: 'Home', icon: Home, href: '/', active: true },
+  { label: 'My Profile', icon: CircleUser, href: '/profile' },
   { label: 'My Bids', icon: Gavel, href: '#'},
   { label: 'Wallet', icon: Wallet, href: '#' },
   { label: 'Game Rates', icon: Gavel, href: '#' },
@@ -229,10 +228,12 @@ export default function HomePage() {
         <footer className="fixed bottom-0 left-0 right-0 z-30 bg-primary text-primary-foreground shadow-[0_-2px_5px_rgba(0,0,0,0.1)]">
            <div className="flex justify-around">
               {bottomNavItems.map(item => (
-                  <Button key={item.label} variant="ghost" className={`flex-1 flex-col h-16 rounded-none ${item.active ? 'bg-black/20' : ''} hover:bg-black/10 text-primary-foreground`}>
+                <Link href={item.href} key={item.label} passHref>
+                  <Button variant="ghost" className={`flex-1 flex-col h-16 rounded-none ${item.active ? 'bg-black/20' : ''} hover:bg-black/10 text-primary-foreground`}>
                       <item.icon className="h-6 w-6" />
                       <span className="text-xs mt-1">{item.label}</span>
                   </Button>
+                </Link>
               ))}
            </div>
         </footer>
@@ -247,10 +248,12 @@ export default function HomePage() {
           <ul className="space-y-1">
             {sidebarNavItems.map(item => (
               <li key={item.label}>
-                <a href={item.href} className={`flex items-center gap-3 p-3 rounded-md transition-colors ${item.active ? 'bg-black/20' : 'hover:bg-black/10'}`}>
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </a>
+                <Link href={item.href} passHref>
+                    <div className={`flex items-center gap-3 p-3 rounded-md transition-colors ${item.active ? 'bg-black/20' : 'hover:bg-black/10'}`}>
+                    <item.icon className="h-5 w-5" />
+                    <span className="font-medium text-sm">{item.label}</span>
+                    </div>
+                </Link>
               </li>
             ))}
           </ul>

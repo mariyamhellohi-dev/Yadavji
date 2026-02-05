@@ -12,7 +12,7 @@ import { useWallet } from '@/hooks/use-wallet'
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#'},
-    { label: 'Profile', icon: CircleUser, href: '#' },
+    { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 export default function PaymentVerificationPage() {
