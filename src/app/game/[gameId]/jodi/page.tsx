@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft, Wallet, CircleUser, Gavel, Home } from 'lucide-react'
@@ -21,10 +21,16 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { useWallet } from '@/hooks/use-wallet'
+import { createClient } from '@/lib/supabase/client'
+
+type UserSession = {
+  user: { id: string; [key: string]: any };
+  wallet: { id: string; user_id: string; balance: number };
+}
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
-    { label: 'Bids', icon: Gavel, href: '#'},
+    { label: 'Bids', icon: Gavel, href: '/my-bids'},
     { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
@@ -42,11 +48,21 @@ export default function JodiPage() {
     
     const [walletBalance, setWalletBalance] = useWallet();
     const [showAddMoneyDialog, setShowAddMoneyDialog] = useState(false);
+    const [session, setSession] = useState<UserSession | null>(null);
 
     const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
     const [bids, setBids] = useState<{[key: string]: string}>(
         jodiDigits.reduce((acc, digit) => ({...acc, [digit]: ''}), {})
     );
+
+     useEffect(() => {
+        const userRaw = localStorage.getItem('yadavji-user');
+        if (!userRaw) {
+          router.replace('/login');
+        } else {
+          setSession(JSON.parse(userRaw));
+        }
+      }, [router]);
 
     const handleAmountClick = (amount: number) => {
         setSelectedAmount(currentAmount => currentAmount === amount ? null : amount);
@@ -77,8 +93,25 @@ export default function JodiPage() {
     
     const today = format(new Date(), 'dd/MM/yyyy')
 
-    const handleSubmit = () => {
-        if (totalPoints === 0) {
+    const handleSubmit = async () => {
+        if (!session?.user?.id) {
+            toast({ variant: 'destructive', title: 'Not logged in', description: 'Please log in to place a bid.' });
+            router.push('/login');
+            return;
+        }
+
+        const bidsToInsert = Object.entries(bids)
+            .filter(([_, amount]) => amount && parseInt(amount) > 0)
+            .map(([digit, amount]) => ({
+                user_id: session.user.id,
+                game_id: params.gameId as string,
+                game_name: gameName,
+                bid_type: 'jodi',
+                digits: digit,
+                amount: parseInt(amount),
+            }));
+
+        if (bidsToInsert.length === 0) {
             toast({
                 variant: 'destructive',
                 title: 'No bids placed',
@@ -87,17 +120,29 @@ export default function JodiPage() {
             return;
         }
 
-        if (totalPoints <= walletBalance) {
+        const totalBidsAmount = bidsToInsert.reduce((sum, bid) => sum + bid.amount, 0);
+
+        if (totalBidsAmount > walletBalance) {
+            setShowAddMoneyDialog(true);
+            return;
+        }
+
+        const supabase = createClient();
+        const { error } = await supabase.from('bids').insert(bidsToInsert);
+
+        if (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Bid submission failed',
+                description: error.message,
+            });
+        } else {
+            await setWalletBalance(prevBalance => prevBalance - totalBidsAmount);
             toast({
                 title: 'Bid Submitted Successfully!',
-                description: `Your bid of ${totalPoints} points has been placed.`,
+                description: `Your bid of ${totalBidsAmount} points has been placed.`,
             });
-            setWalletBalance(prevBalance => prevBalance - totalPoints);
-            setTimeout(() => {
-                router.push('/');
-            }, 1500); 
-        } else {
-            setShowAddMoneyDialog(true);
+            router.push('/');
         }
     };
 

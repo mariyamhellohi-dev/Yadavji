@@ -62,14 +62,14 @@ const quickActions = [
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: true },
-    { label: 'Bids', icon: Gavel, href: '#'},
+    { label: 'Bids', icon: Gavel, href: '/my-bids'},
     { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 const sidebarNavItems = [
   { label: 'Home', icon: Home, href: '/', active: true },
   { label: 'My Profile', icon: CircleUser, href: '/profile' },
-  { label: 'My Bids', icon: Gavel, href: '#'},
+  { label: 'My Bids', icon: Gavel, href: '/my-bids'},
   { label: 'Wallet', icon: Wallet, href: '#' },
   { label: 'Game Rates', icon: Gavel, href: '#' },
   { label: 'How to Play', icon: PlayCircle, href: '#' },

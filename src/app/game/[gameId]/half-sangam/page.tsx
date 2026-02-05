@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft, Wallet, CircleUser, Gavel, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { format } from 'date-fns'
 import { useToast } from '@/hooks/use-toast'
 import {
@@ -22,15 +21,22 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useWallet } from '@/hooks/use-wallet'
 import { Label } from '@/components/ui/label'
+import { createClient } from '@/lib/supabase/client'
+
+type UserSession = {
+  user: { id: string; [key: string]: any };
+  wallet: { id: string; user_id: string; balance: number };
+}
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
-    { label: 'Bids', icon: Gavel, href: '#'},
+    { label: 'Bids', icon: Gavel, href: '/my-bids'},
     { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 export default function HalfSangamPage() {
     const router = useRouter()
+    const params = useParams()
     const searchParams = useSearchParams()
     const { toast } = useToast()
 
@@ -38,6 +44,7 @@ export default function HalfSangamPage() {
     
     const [walletBalance, setWalletBalance] = useWallet();
     const [showAddMoneyDialog, setShowAddMoneyDialog] = useState(false);
+    const [session, setSession] = useState<UserSession | null>(null);
 
     const [openAnk, setOpenAnk] = useState('')
     const [closePatti, setClosePatti] = useState('')
@@ -46,6 +53,15 @@ export default function HalfSangamPage() {
     const [openPatti, setOpenPatti] = useState('')
     const [closeAnk, setCloseAnk] = useState('')
     const [amount2, setAmount2] = useState('')
+
+     useEffect(() => {
+        const userRaw = localStorage.getItem('yadavji-user');
+        if (!userRaw) {
+          router.replace('/login');
+        } else {
+          setSession(JSON.parse(userRaw));
+        }
+      }, [router]);
 
     const handleReset = () => {
         setOpenAnk('')
@@ -62,7 +78,13 @@ export default function HalfSangamPage() {
     
     const today = format(new Date(), 'dd/MM/yyyy')
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!session?.user?.id) {
+            toast({ variant: 'destructive', title: 'Not logged in', description: 'Please log in to place a bid.' });
+            router.push('/login');
+            return;
+        }
+
         if (totalPoints === 0) {
             toast({
                 variant: 'destructive',
@@ -71,31 +93,64 @@ export default function HalfSangamPage() {
             });
             return;
         }
+        
+        if (totalPoints > walletBalance) {
+            setShowAddMoneyDialog(true);
+            return;
+        }
 
+        const bidsToInsert = [];
         const isBet1Placed = parseInt(amount1) > 0;
         const isBet2Placed = parseInt(amount2) > 0;
 
-        if (isBet1Placed && (openAnk.length !== 1 || closePatti.length !== 3)) {
-            toast({ variant: 'destructive', title: 'Invalid Bid', description: 'Open Ank must be 1 digit and Close Patti must be 3 digits.' });
-            return;
+        if (isBet1Placed) {
+            if (openAnk.length !== 1 || closePatti.length !== 3) {
+                toast({ variant: 'destructive', title: 'Invalid Bid 1', description: 'Open Ank must be 1 digit and Close Patti must be 3 digits.' });
+                return;
+            }
+            bidsToInsert.push({
+                user_id: session.user.id,
+                game_id: params.gameId as string,
+                game_name: gameName,
+                bid_type: 'half_sangam',
+                open_ank: openAnk,
+                close_patti: closePatti,
+                amount: parseInt(amount1),
+            });
         }
 
-        if (isBet2Placed && (openPatti.length !== 3 || closeAnk.length !== 1)) {
-            toast({ variant: 'destructive', title: 'Invalid Bid', description: 'Open Patti must be 3 digits and Close Ank must be 1 digit.' });
-            return;
+        if (isBet2Placed) {
+            if (openPatti.length !== 3 || closeAnk.length !== 1) {
+                toast({ variant: 'destructive', title: 'Invalid Bid 2', description: 'Open Patti must be 3 digits and Close Ank must be 1 digit.' });
+                return;
+            }
+            bidsToInsert.push({
+                user_id: session.user.id,
+                game_id: params.gameId as string,
+                game_name: gameName,
+                bid_type: 'half_sangam',
+                open_patti: openPatti,
+                close_ank: closeAnk,
+                amount: parseInt(amount2),
+            });
         }
+        
+        const supabase = createClient();
+        const { error } = await supabase.from('bids').insert(bidsToInsert);
 
-        if (totalPoints <= walletBalance) {
+        if (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Bid submission failed',
+                description: error.message,
+            });
+        } else {
+            await setWalletBalance(prevBalance => prevBalance - totalPoints);
             toast({
                 title: 'Bid Submitted Successfully!',
                 description: `Your bid of ${totalPoints} points has been placed.`,
             });
-            setWalletBalance(prevBalance => prevBalance - totalPoints);
-            setTimeout(() => {
-                router.push('/');
-            }, 1500); 
-        } else {
-            setShowAddMoneyDialog(true);
+            router.push('/');
         }
     };
 
@@ -129,17 +184,9 @@ export default function HalfSangamPage() {
                     <div className="max-w-4xl mx-auto px-4">
                         <Card className="bg-card border-border shadow-md">
                             <CardContent className="p-6 space-y-6">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Input value={today} readOnly className="text-center font-semibold bg-white" />
-                                     <Select defaultValue="open">
-                                        <SelectTrigger className="bg-white">
-                                            <SelectValue placeholder="Select Session" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="open">{gameName} OPEN</SelectItem>
-                                            <SelectItem value="close">{gameName} CLOSE</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Input value={`${gameName} HALF SANGAM`} readOnly className="text-center font-semibold bg-white" />
                                 </div>
                                 
                                 <div className="border-t border-border pt-6">

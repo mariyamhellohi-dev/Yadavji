@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft, Wallet, CircleUser, Gavel, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { format } from 'date-fns'
 import { useToast } from '@/hooks/use-toast'
 import {
@@ -22,15 +21,22 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useWallet } from '@/hooks/use-wallet'
 import { Label } from '@/components/ui/label'
+import { createClient } from '@/lib/supabase/client'
+
+type UserSession = {
+  user: { id: string; [key: string]: any };
+  wallet: { id: string; user_id: string; balance: number };
+}
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
-    { label: 'Bids', icon: Gavel, href: '#'},
+    { label: 'Bids', icon: Gavel, href: '/my-bids'},
     { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
 export default function FullSangamPage() {
     const router = useRouter()
+    const params = useParams()
     const searchParams = useSearchParams()
     const { toast } = useToast()
 
@@ -38,10 +44,20 @@ export default function FullSangamPage() {
     
     const [walletBalance, setWalletBalance] = useWallet();
     const [showAddMoneyDialog, setShowAddMoneyDialog] = useState(false);
+    const [session, setSession] = useState<UserSession | null>(null);
 
     const [openPatti, setOpenPatti] = useState('')
     const [closePatti, setClosePatti] = useState('')
     const [amount, setAmount] = useState('')
+
+     useEffect(() => {
+        const userRaw = localStorage.getItem('yadavji-user');
+        if (!userRaw) {
+          router.replace('/login');
+        } else {
+          setSession(JSON.parse(userRaw));
+        }
+      }, [router]);
 
     const handleReset = () => {
         setOpenPatti('')
@@ -55,7 +71,13 @@ export default function FullSangamPage() {
     
     const today = format(new Date(), 'dd/MM/yyyy')
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!session?.user?.id) {
+            toast({ variant: 'destructive', title: 'Not logged in', description: 'Please log in to place a bid.' });
+            router.push('/login');
+            return;
+        }
+
         if (totalPoints === 0) {
             toast({
                 variant: 'destructive',
@@ -70,17 +92,37 @@ export default function FullSangamPage() {
             return;
         }
 
-        if (totalPoints <= walletBalance) {
+        if (totalPoints > walletBalance) {
+            setShowAddMoneyDialog(true);
+            return;
+        }
+        
+        const bidToInsert = {
+            user_id: session.user.id,
+            game_id: params.gameId as string,
+            game_name: gameName,
+            bid_type: 'full_sangam',
+            open_patti: openPatti,
+            close_patti: closePatti,
+            amount: totalPoints,
+        };
+
+        const supabase = createClient();
+        const { error } = await supabase.from('bids').insert([bidToInsert]);
+
+        if (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Bid submission failed',
+                description: error.message,
+            });
+        } else {
+            await setWalletBalance(prevBalance => prevBalance - totalPoints);
             toast({
                 title: 'Bid Submitted Successfully!',
                 description: `Your bid of ${totalPoints} points has been placed.`,
             });
-            setWalletBalance(prevBalance => prevBalance - totalPoints);
-            setTimeout(() => {
-                router.push('/');
-            }, 1500); 
-        } else {
-            setShowAddMoneyDialog(true);
+            router.push('/');
         }
     };
 
@@ -116,15 +158,7 @@ export default function FullSangamPage() {
                             <CardContent className="p-6 space-y-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                                     <Input value={today} readOnly className="text-center font-semibold bg-white" />
-                                     <Select defaultValue="open">
-                                        <SelectTrigger className="bg-white">
-                                            <SelectValue placeholder="Select Session" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="open">{gameName} OPEN</SelectItem>
-                                            <SelectItem value="close">{gameName} CLOSE</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Input value={`${gameName} FULL SANGAM`} readOnly className="text-center font-semibold bg-white" />
                                 </div>
                                 
                                 <div className="border-t border-border pt-6">

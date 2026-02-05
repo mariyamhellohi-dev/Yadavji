@@ -28,7 +28,7 @@ type BankAccount = {
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
-    { label: 'Bids', icon: Gavel, href: '#' },
+    { label: 'Bids', icon: Gavel, href: '/my-bids' },
     { label: 'Profile', icon: CircleUser, href: '/profile', active: true },
 ];
 
