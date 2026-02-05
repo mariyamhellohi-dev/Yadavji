@@ -39,8 +39,7 @@ export default function AddFundPage() {
             });
             return;
         }
-        // Placeholder for actual fund addition logic
-        console.log(`Proceeding with adding ${numericAmount}`);
+        router.push(`/payment-verification?amount=${numericAmount}`);
     }
 
     return (
