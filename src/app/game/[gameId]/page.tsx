@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
 import { useWallet } from '@/hooks/use-wallet'
+import { PlayCircle } from 'lucide-react'
 
 const SingleAnkIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg {...props} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +84,7 @@ export default function GameDashboardPage() {
     { label: 'Single Patti', icon: SinglePattiIcon, href: `/game/${gameId}/single-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Double Patti', icon: DoublePattiIcon, href: `/game/${gameId}/double-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Triple Patti', icon: TriplePattiIcon, href: `/game/${gameId}/triple-patti?name=${encodeURIComponent(gameName)}` },
-    { label: 'Half Sangam', icon: SangamIcon, href: '#' },
+    { label: 'Half Sangam', icon: SangamIcon, href: `/game/${gameId}/half-sangam?name=${encodeURIComponent(gameName)}` },
     { label: 'Full Sangam', icon: SangamIcon, href: '#' },
   ]
 
