@@ -35,27 +35,49 @@ export default function LoginPage() {
       return
     }
 
-    const { data, error } = await supabase
+    const { data: userData, error: userError } = await supabase
       .from('users')
       .select('*')
       .eq('name', name)
       .eq('password', password)
       .single()
 
-    if (error || !data) {
+    if (userError || !userData) {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
         description: 'Invalid username or password.',
       })
-    } else {
-      toast({
-        title: 'Login Successful',
-        description: 'Welcome back!',
-      })
-      localStorage.setItem('yadavji-user', JSON.stringify(data))
-      router.replace('/')
+      return
     }
+
+    const { data: walletData, error: walletError } = await supabase
+        .from('wallets')
+        .select('*')
+        .eq('user_id', userData.id)
+        .single()
+
+    if (walletError || !walletData) {
+        toast({
+            variant: 'destructive',
+            title: 'Login Failed',
+            description: 'Could not find a wallet for this user. Please contact support.',
+        })
+        return
+    }
+
+
+    toast({
+      title: 'Login Successful',
+      description: 'Welcome back!',
+    })
+
+    const session = {
+        user: userData,
+        wallet: walletData,
+    };
+    localStorage.setItem('yadavji-user', JSON.stringify(session))
+    router.replace('/')
   }
 
   return (

@@ -61,26 +61,41 @@ export default function SignUpPage() {
         return;
     }
 
-    const { error } = await supabase.from('users').insert({
+    const { data: newUser, error: userError } = await supabase.from('users').insert({
       name: username,
       mobile: mobile,
       email: email,
       password: password,
-    })
+    }).select().single()
 
-    if (error) {
+    if (userError || !newUser) {
       toast({
         variant: 'destructive',
         title: 'Registration Failed',
-        description: error.message,
+        description: userError?.message || 'Could not create user.',
       })
-    } else {
-      toast({
-        title: 'Registration Successful',
-        description: 'You can now log in with your credentials.',
-      })
-      router.push('/login')
+      return
     }
+
+    const { error: walletError } = await supabase.from('wallets').insert({
+        user_id: newUser.id,
+        balance: 0,
+    })
+    
+    if (walletError) {
+        toast({
+            variant: 'destructive',
+            title: 'Registration Incomplete',
+            description: `Your user account was created, but we failed to create your wallet. Please contact support. Error: ${walletError.message}`,
+        })
+        return
+    }
+
+    toast({
+      title: 'Registration Successful',
+      description: 'You can now log in with your credentials.',
+    })
+    router.push('/login')
   }
 
   return (
