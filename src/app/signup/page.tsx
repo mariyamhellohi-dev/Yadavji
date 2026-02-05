@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label'
 export default function SignUpPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [mobile, setMobile] = useState('')
   const [email, setEmail] = useState('')
@@ -23,7 +22,7 @@ export default function SignUpPage() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!fullName || !username || !mobile || !email || !password || !confirmPassword) {
+    if (!username || !mobile || !email || !password || !confirmPassword) {
         toast({ variant: 'destructive', title: 'Error', description: 'Please fill out all fields.' })
         return
     }
@@ -93,18 +92,6 @@ export default function SignUpPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="fullName">Your Name:</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="Enter Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                className="bg-white"
-              />
-            </div>
             <div className="space-y-1">
               <Label htmlFor="username">Username:</Label>
               <Input
