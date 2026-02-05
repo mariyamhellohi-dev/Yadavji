@@ -72,7 +72,7 @@ export default function AddFundPage() {
                             <div className="text-center text-sm text-muted-foreground space-y-1">
                                 <p>Payment add krne ke 5 minute ke andar aapke wallet me points add ho jayenge.</p>
                                 <p>Dont worry Wait kriye.</p>
-                                <p className="font-semibold text-foreground">Your money is always safe with Play Matka Online</p>
+                                <p className="font-semibold text-foreground">Your money is always safe with YadavJi Khel</p>
                             </div>
 
                             <div className="relative my-6">

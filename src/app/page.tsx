@@ -1,3 +1,4 @@
+'use client'
 import {
   CircleUser,
   Clock,
@@ -49,7 +50,7 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 
 const quickActions = [
   { label: 'Add Fund', icon: CreditCard, href: '/add-fund' },
-  { label: 'Withdraw', icon: IndianRupee, href: '#' },
+  { label: 'Withdraw', icon: IndianRupee, href: '/withdraw' },
   { label: 'Support', icon: HelpCircle, href: '#' },
 ]
 
@@ -217,10 +218,8 @@ export default function HomePage() {
         <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0.5 relative">
           <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
           <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
-          <SheetClose asChild>
-            <Button variant="ghost" size="icon" className="absolute top-3 right-2 text-primary-foreground hover:bg-black/10">
-              <X className="h-5 w-5" />
-            </Button>
+          <SheetClose>
+            <span className="sr-only">Close</span>
           </SheetClose>
         </SheetHeader>
         <nav className="flex-grow p-2 overflow-y-auto">
