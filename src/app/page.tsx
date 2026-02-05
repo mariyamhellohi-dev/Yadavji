@@ -30,6 +30,10 @@ import {
 } from "@/components/ui/dialog"
 import { useWallet } from '@/hooks/use-wallet'
 
+type UserSession = {
+  user: { id: string; name: string; email: string; mobile: string; };
+  wallet: { id: string; user_id: string; balance: number };
+}
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -75,12 +79,15 @@ export default function HomePage() {
   const router = useRouter()
   const [walletBalance] = useWallet()
   const [isClient, setIsClient] = useState(false)
+  const [session, setSession] = useState<UserSession | null>(null)
 
   useEffect(() => {
     setIsClient(true)
-    const user = localStorage.getItem('yadavji-user')
-    if (!user) {
+    const userRaw = localStorage.getItem('yadavji-user')
+    if (!userRaw) {
       router.replace('/login')
+    } else {
+      setSession(JSON.parse(userRaw))
     }
   }, [router])
   
@@ -241,8 +248,8 @@ export default function HomePage() {
 
       <SheetContent side="left" className="p-0 w-[280px] bg-primary text-primary-foreground border-r-0 flex flex-col">
         <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0.5 relative">
-          <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
-          <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
+          <SheetTitle className="font-bold text-lg">{session?.user?.name}</SheetTitle>
+          <SheetDescription className="text-sm text-primary-foreground/80">{session?.user?.mobile}</SheetDescription>
         </SheetHeader>
         <nav className="flex-grow p-2 overflow-y-auto">
           <ul className="space-y-1">
