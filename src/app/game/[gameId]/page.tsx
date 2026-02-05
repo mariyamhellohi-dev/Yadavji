@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
+import { useWallet } from '@/hooks/use-wallet'
 
 const SingleAnkIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg {...props} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,6 +72,7 @@ const bottomNavItems = [
 export default function GameDashboardPage() {
   const params = useParams()
   const searchParams = useSearchParams()
+  const [walletBalance] = useWallet();
 
   const gameId = params.gameId as string
   const gameName = searchParams.get('name') || 'Game'
@@ -101,7 +103,7 @@ export default function GameDashboardPage() {
           className="rounded-full bg-white border-yellow-300 text-black h-9 px-4 font-semibold flex items-center gap-2"
         >
           <Wallet className="h-5 w-5" />
-          <span>₹ 5,240.00</span>
+          <span>₹ {walletBalance.toFixed(2)}</span>
         </Button>
       </header>
 

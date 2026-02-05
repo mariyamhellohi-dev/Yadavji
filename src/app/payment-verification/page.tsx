@@ -7,6 +7,7 @@ import { ChevronLeft, Wallet, Home, Gavel, CircleUser } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
+import { useWallet } from '@/hooks/use-wallet'
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
@@ -19,7 +20,7 @@ export default function PaymentVerificationPage() {
     const searchParams = useSearchParams()
     const { toast } = useToast()
     const amount = searchParams.get('amount') || '0'
-    const walletBalance = 5240; // This is a static value from other pages, I'll keep it for consistency in the header.
+    const [walletBalance] = useWallet();
 
     const handlePaymentCompleted = () => {
         toast({

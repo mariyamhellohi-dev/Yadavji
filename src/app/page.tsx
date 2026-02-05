@@ -24,9 +24,10 @@ import {
   DialogContent,
   DialogTrigger,
   DialogClose,
-  DialogTitle,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog"
+import { useWallet } from '@/hooks/use-wallet'
 
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -70,6 +71,8 @@ const sidebarNavItems = [
 ]
 
 export default function HomePage() {
+  const [walletBalance] = useWallet()
+
   return (
     <Sheet>
       <div className="bg-background min-h-screen font-sans">
@@ -87,7 +90,7 @@ export default function HomePage() {
                 className="rounded-full bg-white border-yellow-300 text-black h-9 px-4 font-semibold flex items-center gap-2"
             >
                 <Wallet className="h-5 w-5" />
-                <span>₹ 5,240.00</span>
+                <span>₹ {walletBalance.toFixed(2)}</span>
             </Button>
         </header>
 
@@ -218,9 +221,6 @@ export default function HomePage() {
         <SheetHeader className="p-4 border-b border-black/20 text-left space-y-0.5 relative">
           <SheetTitle className="font-bold text-lg">YadavJi Khel</SheetTitle>
           <SheetDescription className="text-sm text-primary-foreground/80">7111525376</SheetDescription>
-          <SheetClose>
-            <span className="sr-only">Close</span>
-          </SheetClose>
         </SheetHeader>
         <nav className="flex-grow p-2 overflow-y-auto">
           <ul className="space-y-1">

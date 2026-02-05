@@ -20,6 +20,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { useWallet } from '@/hooks/use-wallet'
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
@@ -39,7 +40,7 @@ export default function JodiPage() {
 
     const gameName = searchParams.get('name') || 'Game'
     
-    const [walletBalance, setWalletBalance] = useState(5240);
+    const [walletBalance, setWalletBalance] = useWallet();
     const [showAddMoneyDialog, setShowAddMoneyDialog] = useState(false);
 
     const [selectedAmount, setSelectedAmount] = useState<number | null>(null);

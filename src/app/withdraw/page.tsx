@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
+import { useWallet } from '@/hooks/use-wallet'
 
 // Dummy data for bank accounts
 const bankAccounts = [
@@ -26,7 +27,7 @@ export default function WithdrawPage() {
     const router = useRouter()
     const { toast } = useToast()
     
-    const [walletBalance, setWalletBalance] = useState(5240)
+    const [walletBalance, setWalletBalance] = useWallet()
     const [amount, setAmount] = useState('')
     const [selectedAccount, setSelectedAccount] = useState(bankAccounts[0].value)
 

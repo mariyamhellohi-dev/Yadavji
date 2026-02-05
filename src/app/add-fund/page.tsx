@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
+import { useWallet } from '@/hooks/use-wallet'
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
@@ -23,7 +24,7 @@ export default function AddFundPage() {
     const router = useRouter()
     const { toast } = useToast()
     const [amount, setAmount] = useState('');
-    const [walletBalance, setWalletBalance] = useState(5240);
+    const [walletBalance] = useWallet();
 
     const handleAmountClick = (value: number) => {
         setAmount(value.toString());
