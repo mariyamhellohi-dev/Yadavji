@@ -17,6 +17,15 @@ type UserSession = {
   wallet: { id: string; user_id: string; balance: number };
 }
 
+type BankAccount = {
+  id: string
+  user_id: string
+  account_holder_name: string
+  bank_name: string
+  account_number: string
+  ifsc_code: string
+}
+
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
     { label: 'Bids', icon: Gavel, href: '#' },
@@ -32,6 +41,7 @@ export default function ProfilePage() {
     const [isClient, setIsClient] = useState(false)
     
     // Bank details form state
+    const [bankAccount, setBankAccount] = useState<BankAccount | null>(null)
     const [accountHolderName, setAccountHolderName] = useState('')
     const [bankName, setBankName] = useState('')
     const [accountNumber, setAccountNumber] = useState('')
@@ -41,17 +51,43 @@ export default function ProfilePage() {
         setIsClient(true)
         const sessionRaw = localStorage.getItem('yadavji-user')
         if (sessionRaw) {
-            setSession(JSON.parse(sessionRaw))
+            const currentSession = JSON.parse(sessionRaw) as UserSession;
+            setSession(currentSession)
+
+            const fetchBankDetails = async () => {
+                if (currentSession?.user?.id) {
+                    const { data, error } = await supabase
+                        .from('bank_accounts')
+                        .select('*')
+                        .eq('user_id', currentSession.user.id)
+                        .maybeSingle(); // Fetches one record or null
+
+                    if (error) {
+                        toast({ variant: 'destructive', title: 'Error', description: 'Could not fetch bank details.' });
+                        return;
+                    }
+
+                    if (data) {
+                        setBankAccount(data);
+                        setAccountHolderName(data.account_holder_name);
+                        setBankName(data.bank_name);
+                        setAccountNumber(data.account_number);
+                        setIfscCode(data.ifsc_code);
+                    }
+                }
+            };
+            fetchBankDetails();
+
         } else {
             router.replace('/login')
         }
-    }, [router])
+    }, [router, supabase, toast])
 
-    const handleSaveBankDetails = async (e: React.FormEvent) => {
+    const handleSaveOrUpdateBankDetails = async (e: React.FormEvent) => {
         e.preventDefault()
 
         if (!session?.user?.id) {
-            toast({ variant: 'destructive', title: 'Error', description: 'You must be logged in to add a bank account.' })
+            toast({ variant: 'destructive', title: 'Error', description: 'You must be logged in to add or update a bank account.' })
             return
         }
 
@@ -60,23 +96,42 @@ export default function ProfilePage() {
             return
         }
 
-        const { error } = await supabase.from('bank_accounts').insert({
+        const detailsToSave = {
             user_id: session.user.id,
             account_holder_name: accountHolderName,
             bank_name: bankName,
             account_number: accountNumber,
             ifsc_code: ifscCode,
-        })
+        }
 
-        if (error) {
-            toast({ variant: 'destructive', title: 'Failed to save details', description: error.message })
+        if (bankAccount) {
+            // Update existing account
+            const { error } = await supabase
+                .from('bank_accounts')
+                .update(detailsToSave)
+                .eq('id', bankAccount.id);
+            
+            if (error) {
+                toast({ variant: 'destructive', title: 'Failed to update details', description: error.message })
+            } else {
+                toast({ title: 'Success', description: 'Bank account details updated successfully.' })
+            }
         } else {
-            toast({ title: 'Success', description: 'Bank account details saved successfully.' })
-            // Clear form
-            setAccountHolderName('')
-            setBankName('')
-            setAccountNumber('')
-            setIfscCode('')
+            // Insert new account
+            const { data: newAccount, error } = await supabase
+                .from('bank_accounts')
+                .insert(detailsToSave)
+                .select()
+                .single()
+
+            if (error) {
+                toast({ variant: 'destructive', title: 'Failed to save details', description: error.message })
+            } else {
+                toast({ title: 'Success', description: 'Bank account details saved successfully.' })
+                if (newAccount) {
+                    setBankAccount(newAccount);
+                }
+            }
         }
     }
     
@@ -133,10 +188,12 @@ export default function ProfilePage() {
                                 <Landmark />
                                 Bank Account Details
                             </CardTitle>
-                            <CardDescription>Add your bank account for withdrawals. This information is stored securely.</CardDescription>
+                            <CardDescription>
+                                {bankAccount ? 'Update your bank account for withdrawals.' : 'Add your bank account for withdrawals. This information is stored securely.'}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSaveBankDetails} className="space-y-4">
+                            <form onSubmit={handleSaveOrUpdateBankDetails} className="space-y-4">
                                 <div className="space-y-1">
                                     <Label htmlFor="accountHolder">Account Holder Name</Label>
                                     <Input id="accountHolder" value={accountHolderName} onChange={e => setAccountHolderName(e.target.value)} placeholder="e.g. John Doe" className="bg-white" />
@@ -154,7 +211,7 @@ export default function ProfilePage() {
                                     <Input id="ifsc" value={ifscCode} onChange={e => setIfscCode(e.target.value)} placeholder="Enter bank's IFSC code" className="bg-white" />
                                 </div>
                                 <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                                    Save Bank Details
+                                    {bankAccount ? 'Update Bank Details' : 'Save Bank Details'}
                                 </Button>
                             </form>
                         </CardContent>
