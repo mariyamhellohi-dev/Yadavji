@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/hooks/use-toast'
 
 const bottomNavItems = [
     { label: 'Home', icon: Home, href: '/', active: false },
@@ -20,12 +21,27 @@ const amountShortcuts = [500, 1000, 2000, 5000];
 
 export default function AddFundPage() {
     const router = useRouter()
+    const { toast } = useToast()
     const [amount, setAmount] = useState('');
     const [walletBalance, setWalletBalance] = useState(5240);
 
     const handleAmountClick = (value: number) => {
         setAmount(value.toString());
     };
+
+    const handleAddPoints = () => {
+        const numericAmount = parseInt(amount, 10);
+        if (!amount || isNaN(numericAmount) || numericAmount < 500) {
+            toast({
+                variant: 'destructive',
+                title: 'Invalid Amount',
+                description: 'Minimum amount to add is ₹500.',
+            });
+            return;
+        }
+        // Placeholder for actual fund addition logic
+        console.log(`Proceeding with adding ${numericAmount}`);
+    }
 
     return (
         <div className="bg-background min-h-screen font-sans">
@@ -72,6 +88,7 @@ export default function AddFundPage() {
                                     type="number" 
                                     placeholder="Enter Amount"
                                     value={amount}
+                                    min="500"
                                     onChange={(e) => setAmount(e.target.value)}
                                     className="text-center h-12 text-lg bg-white"
                                 />
@@ -101,7 +118,7 @@ export default function AddFundPage() {
                                     </SelectContent>
                                 </Select>
 
-                                <Button className="w-full h-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90">
+                                <Button className="w-full h-12 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90" onClick={handleAddPoints}>
                                     Add Points
                                 </Button>
                             </div>
