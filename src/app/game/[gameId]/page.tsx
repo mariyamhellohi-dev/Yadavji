@@ -80,7 +80,7 @@ export default function GameDashboardPage() {
   const bidOptions = [
     { label: 'Single Ank', icon: SingleAnkIcon, href: `/game/${gameId}/single-ank?name=${encodeURIComponent(gameName)}` },
     { label: 'Jodi', icon: JodiIcon, href: `/game/${gameId}/jodi?name=${encodeURIComponent(gameName)}` },
-    { label: 'Single Patti', icon: SinglePattiIcon, href: '#' },
+    { label: 'Single Patti', icon: SinglePattiIcon, href: `/game/${gameId}/single-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Double Patti', icon: DoublePattiIcon, href: '#' },
     { label: 'Triple Patti', icon: TriplePattiIcon, href: '#' },
     { label: 'Half Sangam', icon: SangamIcon, href: '#' },
