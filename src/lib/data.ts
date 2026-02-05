@@ -55,3 +55,5 @@ export const doublePannaDigits: Record<string, string[]> = {
     'Panna of ank 8': ['116', '224', '233', '288', '440', '477', '558', '800', '990'],
     'Panna of ank 9': ['117', '144', '199', '225', '388', '559', '577', '667', '900'],
 };
+
+export const triplePattiDigits = ['000', '111', '222', '333', '444', '555', '666', '777', '888', '999'];
