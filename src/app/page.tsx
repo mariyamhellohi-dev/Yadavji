@@ -152,13 +152,8 @@ export default function HomePage() {
                         </CardContent>
                       </Card>
                       <DialogContent className="max-w-md p-0">
-                        <DialogHeader className="bg-primary p-4 flex flex-row justify-between items-center rounded-t-lg">
+                        <DialogHeader className="bg-primary p-4 text-center rounded-t-lg">
                           <DialogTitle className="text-lg font-bold text-black uppercase">{game.name}</DialogTitle>
-                          <DialogClose asChild>
-                            <button className="text-black opacity-70 hover:opacity-100">
-                              <X className="h-5 w-5" />
-                            </button>
-                          </DialogClose>
                         </DialogHeader>
                         <div className="p-6 space-y-4 text-sm">
                           <div className="flex justify-between items-center border-b pb-3">
