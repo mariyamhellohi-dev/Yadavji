@@ -81,7 +81,7 @@ export default function GameDashboardPage() {
     { label: 'Single Ank', icon: SingleAnkIcon, href: `/game/${gameId}/single-ank?name=${encodeURIComponent(gameName)}` },
     { label: 'Jodi', icon: JodiIcon, href: `/game/${gameId}/jodi?name=${encodeURIComponent(gameName)}` },
     { label: 'Single Patti', icon: SinglePattiIcon, href: `/game/${gameId}/single-patti?name=${encodeURIComponent(gameName)}` },
-    { label: 'Double Patti', icon: DoublePattiIcon, href: '#' },
+    { label: 'Double Patti', icon: DoublePattiIcon, href: `/game/${gameId}/double-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Triple Patti', icon: TriplePattiIcon, href: '#' },
     { label: 'Half Sangam', icon: SangamIcon, href: '#' },
     { label: 'Full Sangam', icon: SangamIcon, href: '#' },
