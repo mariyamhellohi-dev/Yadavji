@@ -200,7 +200,7 @@ export default function JodiPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => router.push('#')}>Add Money</AlertDialogAction>
+                        <AlertDialogAction onClick={() => router.push('/add-fund')}>Add Money</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

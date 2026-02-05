@@ -48,7 +48,7 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 const quickActions = [
-  { label: 'Add Fund', icon: CreditCard, href: '#' },
+  { label: 'Add Fund', icon: CreditCard, href: '/add-fund' },
   { label: 'Withdraw', icon: IndianRupee, href: '#' },
   { label: 'Support', icon: HelpCircle, href: '#' },
 ]
@@ -95,14 +95,15 @@ export default function HomePage() {
               
               <div className="grid grid-cols-3 gap-3">
                   {quickActions.map((action) => (
+                    <Link href={action.href} key={action.label} passHref>
                       <Button
-                          key={action.label}
                           variant="outline"
-                          className="h-20 flex-col justify-center bg-card border-border shadow-sm gap-1"
+                          className="h-20 flex-col justify-center bg-card border-border shadow-sm gap-1 w-full"
                       >
                           <action.icon className="h-6 w-6 text-primary" />
                           <span className="text-xs font-medium text-foreground">{action.label}</span>
                       </Button>
+                    </Link>
                   ))}
               </div>
 
