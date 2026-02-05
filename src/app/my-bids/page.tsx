@@ -41,35 +41,6 @@ const bottomNavItems = [
 
 
 const BidCard = ({ bid }: { bid: Bid }) => {
-    const renderBidDetails = () => {
-        switch (bid.bid_type) {
-            case 'single_ank':
-            case 'jodi':
-            case 'single_patti':
-            case 'double_patti':
-            case 'triple_patti':
-                return <p>Number: <span className="font-bold">{bid.digits}</span></p>
-            case 'half_sangam':
-                return (
-                    <>
-                        {bid.open_ank && <p>Open Ank: <span className="font-bold">{bid.open_ank}</span></p>}
-                        {bid.close_patti && <p>Close Patti: <span className="font-bold">{bid.close_patti}</span></p>}
-                        {bid.open_patti && <p>Open Patti: <span className="font-bold">{bid.open_patti}</span></p>}
-                        {bid.close_ank && <p>Close Ank: <span className="font-bold">{bid.close_ank}</span></p>}
-                    </>
-                );
-            case 'full_sangam':
-                return (
-                    <>
-                        <p>Open Patti: <span className="font-bold">{bid.open_patti}</span></p>
-                        <p>Close Patti: <span className="font-bold">{bid.close_patti}</span></p>
-                    </>
-                );
-            default:
-                return null;
-        }
-    }
-
     const getStatusVariant = (status: string) => {
         switch (status) {
             case 'won': return 'default';
@@ -93,10 +64,7 @@ const BidCard = ({ bid }: { bid: Bid }) => {
                         </div>
                         <Badge variant={getStatusVariant(bid.status)} className="capitalize">{bid.status}</Badge>
                     </div>
-                    <div className="text-sm text-foreground">
-                        {renderBidDetails()}
-                    </div>
-                     <div className="flex justify-between items-end text-sm">
+                     <div className="flex justify-between items-end text-sm pt-2">
                         <p className="text-muted-foreground">Amount: <span className="font-bold text-foreground">₹{bid.amount}</span></p>
                         <p className="text-xs text-muted-foreground">{format(new Date(bid.created_at), "dd MMM, hh:mm a")}</p>
                     </div>
