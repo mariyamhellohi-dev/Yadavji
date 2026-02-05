@@ -1,4 +1,6 @@
 'use client'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   CircleUser,
   Clock,
@@ -71,7 +73,26 @@ const sidebarNavItems = [
 ]
 
 export default function HomePage() {
+  const router = useRouter()
   const [walletBalance] = useWallet()
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+    const user = localStorage.getItem('yadavji-user')
+    if (!user) {
+      router.replace('/login')
+    }
+  }, [router])
+  
+  const handleLogout = () => {
+    localStorage.removeItem('yadavji-user')
+    router.replace('/login')
+  }
+
+  if (!isClient) {
+    return null; // Render nothing on the server
+  }
 
   return (
     <Sheet>
@@ -235,7 +256,7 @@ export default function HomePage() {
           </ul>
         </nav>
         <div className="p-4 mt-auto border-t border-black/10">
-          <Button className="w-full bg-black/80 text-white font-bold hover:bg-black">
+          <Button className="w-full bg-black/80 text-white font-bold hover:bg-black" onClick={handleLogout}>
             <LogOut className="mr-2 h-5 w-5" />
             Logout
           </Button>
