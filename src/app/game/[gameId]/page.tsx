@@ -85,7 +85,7 @@ export default function GameDashboardPage() {
     { label: 'Double Patti', icon: DoublePattiIcon, href: `/game/${gameId}/double-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Triple Patti', icon: TriplePattiIcon, href: `/game/${gameId}/triple-patti?name=${encodeURIComponent(gameName)}` },
     { label: 'Half Sangam', icon: SangamIcon, href: `/game/${gameId}/half-sangam?name=${encodeURIComponent(gameName)}` },
-    { label: 'Full Sangam', icon: SangamIcon, href: '#' },
+    { label: 'Full Sangam', icon: SangamIcon, href: `/game/${gameId}/full-sangam?name=${encodeURIComponent(gameName)}` },
   ]
 
   return (
