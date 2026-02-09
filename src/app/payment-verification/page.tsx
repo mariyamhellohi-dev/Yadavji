@@ -60,7 +60,7 @@ function PaymentVerificationContent() {
 
                             <div className="flex flex-col items-center justify-center space-y-4">
                                 <Image 
-                                    src="https://picsum.photos/seed/qr-code/300/300"
+                                    src="https://docs.lightburnsoftware.com/legacy/img/QRCode/ExampleCode.png"
                                     alt="QR Code for UPI payment"
                                     width={300}
                                     height={300}
