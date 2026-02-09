@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Suspense } from 'react'
 import { ChevronLeft, Wallet, Home, Gavel, CircleUser } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,7 +16,7 @@ const bottomNavItems = [
     { label: 'Profile', icon: CircleUser, href: '/profile' },
 ]
 
-export default function PaymentVerificationPage() {
+function PaymentVerificationContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { toast } = useToast()
@@ -100,5 +101,14 @@ export default function PaymentVerificationPage() {
                 </div>
             </footer>
         </div>
+    )
+}
+
+
+export default function PaymentVerificationPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+            <PaymentVerificationContent />
+        </Suspense>
     )
 }
