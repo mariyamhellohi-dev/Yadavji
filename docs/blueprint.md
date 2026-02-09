@@ -7,6 +7,7 @@
 - Real-Time Results: Display winning numbers using result data.
 - Side Navigation Menu: Offer a slide-out menu with quick access to key sections like 'Home,' 'Bidding History,' and 'Logout'.
 
+
 ## Style Guidelines:
 
 - Primary color: Bright yellow (#FFC107) to establish the app's identity, drawing from the theme of the online Matka betting application.
