@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'docs.lightburnsoftware.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
